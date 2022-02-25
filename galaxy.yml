@@ -1,0 +1,8 @@
+namespace: ffpp
+name: hansible_modules
+version: 0.0.0
+readme: README.md
+authors:
+- Jonas Gunz <himself@jonasgunz.de>
+
+description: Plugins needed for hansible
