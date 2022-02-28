@@ -17,6 +17,13 @@ class CallbackModule(CallbackBase):
     def __init__(self):
         super(CallbackModule, self).__init__()
 
+        self._current_playbook = ''
+        self._current_play = ''
+
+        self._playbook_cnt = 0
+        self._play_cnt = 0
+        self._task_cnt = 0
+
         self._stdout = self.SOCKET_VAR not in os.environ
 
         if not self._stdout:
@@ -47,7 +54,12 @@ class CallbackModule(CallbackBase):
 
         self._out(
                 event = 'task_runner',
+                playbook = self._current_playbook,
+                playbook_id = self._playbook_cnt,
+                play = self._current_play,
+                play_id = self._play_cnt,
                 name = result.task_name,
+                task_id = self._task_cnt,
                 host = result._host.get_name(),
                 is_changed = result.is_changed(),
                 is_skipped = result.is_skipped(),
@@ -66,15 +78,27 @@ class CallbackModule(CallbackBase):
 
     def v2_playbook_on_start(self, playbook):
         # ansible.playbook.Playbook
-        self._out(event = 'pb_start', name = playbook._file_name)
+        name = playbook._file_name
+        self._current_playbook = name
+        self._playbook_cnt += 1
+
+        self._out(event = 'pb_start', name = name, playbook_id = self._playbook_cnt)
 
     def v2_playbook_on_play_start(self, play):
         # ansible.playbook.play.Play
-        self._out(event = 'play_start', name = play.name)
+        name = play.name
+        self._current_play = name
+
+        self._play_cnt += 1
+
+        self._out(event = 'play_start', name = name, play_id = self._play_cnt)
 
     def v2_playbook_on_task_start(self, task, is_conditional):
         # ansible.playbook.task.Task
-        self._out(event = 'task_start', name = task.get_name(), is_conditional=is_conditional)
+
+        self._task_cnt += 1
+
+        self._out(event = 'task_start', name = task.get_name(), task_id = self._task_cnt, is_conditional=is_conditional)
 
     def v2_playbook_on_no_hosts_remaining(self):
         self._out(event = 'no_hosts_remain')
