@@ -53,12 +53,12 @@ class CallbackModule(CallbackBase):
         #data = strip_internal_keys(module_response_deepcopy(result._result))
 
         self._out(
-                event = 'task_runner',
+                event = 'task_runner_result',
                 playbook = self._current_playbook,
                 playbook_id = self._playbook_cnt,
                 play = self._current_play,
                 play_id = self._play_cnt,
-                name = result.task_name,
+                task = result.task_name,
                 task_id = self._task_cnt,
                 host = result._host.get_name(),
                 is_changed = result.is_changed(),
@@ -79,26 +79,26 @@ class CallbackModule(CallbackBase):
     def v2_playbook_on_start(self, playbook):
         # ansible.playbook.Playbook
         name = playbook._file_name
+
         self._current_playbook = name
         self._playbook_cnt += 1
 
-        self._out(event = 'pb_start', name = name, playbook_id = self._playbook_cnt)
+        self._out(event = 'playbook_start', playbook = name, playbook_id = self._playbook_cnt)
 
     def v2_playbook_on_play_start(self, play):
         # ansible.playbook.play.Play
         name = play.name
-        self._current_play = name
 
+        self._current_play = name
         self._play_cnt += 1
 
-        self._out(event = 'play_start', name = name, play_id = self._play_cnt)
+        self._out(event = 'play_start', play = name, play_id = self._play_cnt)
 
     def v2_playbook_on_task_start(self, task, is_conditional):
         # ansible.playbook.task.Task
-
         self._task_cnt += 1
 
-        self._out(event = 'task_start', name = task.get_name(), task_id = self._task_cnt, is_conditional=is_conditional)
+        self._out(event = 'task_start', task = task.get_name(), task_id = self._task_cnt, is_conditional=is_conditional)
 
     def v2_playbook_on_no_hosts_remaining(self):
         self._out(event = 'no_hosts_remain')
@@ -109,6 +109,7 @@ class CallbackModule(CallbackBase):
     def v2_playbook_on_stats(self, stats):
         # ansible.executor.stats.AggregateStats
         # TODO?
+        self._out(event='end')
         pass
 
     def v2_runner_on_ok(self, result):
@@ -131,3 +132,15 @@ class CallbackModule(CallbackBase):
 
     def v2_runner_item_on_skipped(self, result):
         self._on_runner(result, is_item = True)
+
+    def v2_runner_on_start(self, host, task):
+        self._out(
+                event = 'task_runner_start',
+                playbook = self._current_playbook,
+                playbook_id = self._playbook_cnt,
+                play = self._current_play,
+                play_id = self._play_cnt,
+                task = task.name,
+                task_id = self._task_cnt,
+                host = host.get_name(),
+                )
