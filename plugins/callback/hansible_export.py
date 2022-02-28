@@ -20,6 +20,7 @@ class CallbackModule(CallbackBase):
         self._current_playbook = ''
         self._current_play = ''
 
+        self._playbook_cnt = 0
         self._play_cnt = 0
         self._task_cnt = 0
 
@@ -54,6 +55,7 @@ class CallbackModule(CallbackBase):
         self._out(
                 event = 'task_runner',
                 playbook = self._current_playbook,
+                playbook_id = self._playbook_cnt,
                 play = self._current_play,
                 play_id = self._play_cnt,
                 name = result.task_name,
@@ -78,8 +80,9 @@ class CallbackModule(CallbackBase):
         # ansible.playbook.Playbook
         name = playbook._file_name
         self._current_playbook = name
+        self._playbook_cnt += 1
 
-        self._out(event = 'pb_start', name = name)
+        self._out(event = 'pb_start', name = name, playbook_id = self._playbook_cnt)
 
     def v2_playbook_on_play_start(self, play):
         # ansible.playbook.play.Play
