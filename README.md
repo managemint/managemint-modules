@@ -12,7 +12,7 @@ Set UNIX-Socket in envvar `HANSIBLE_OUTPUT_SOCKET`, if not set, data is sent to 
 
 #### Events
 
-* `pb_start`
+* `playbook_start`
 * `play_start`
 * `task_start`
 * `task_runner_start`
