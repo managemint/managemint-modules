@@ -2,6 +2,7 @@ namespace: ffpp
 name: hansible_modules
 version: 0.0.0
 readme: README.md
+license: GPL-3.0
 authors:
 - Jonas Gunz <himself@jonasgunz.de>
 
