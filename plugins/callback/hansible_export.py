@@ -37,7 +37,7 @@ class CallbackModule(CallbackBase):
         else:
             self._sock.sendto(bytes(json.dumps(kwargs), 'utf-8'), self._sockpath)
 
-    def _on_runner(self, result, is_item = False, ignore_errors = False):
+    def _on_runner(self, result, is_item = False, ignore_errors = False, failed = False, unreach = False, skipped = False):
         delegate = False
         delegate_host = ''
         item = ''
@@ -62,9 +62,9 @@ class CallbackModule(CallbackBase):
                 task_id = self._task_cnt,
                 host = result._host.get_name(),
                 is_changed = result.is_changed(),
-                is_skipped = result.is_skipped(),
-                is_failed = result.is_failed(),
-                is_unreachable = result.is_unreachable(),
+                is_skipped = skipped,
+                is_failed = failed,
+                is_unreachable = unreach,
                 ignore_errors = ignore_errors,
                 delegate = delegate,
                 delegate_host = delegate_host,
@@ -119,22 +119,22 @@ class CallbackModule(CallbackBase):
         if ignore_errors is None:
             ignore_errors = False
 
-        self._on_runner(result, ignore_errors = ignore_errors)
+        self._on_runner(result, ignore_errors = ignore_errors, failed=True)
 
-    def v2_runner_on_skipped(self, result):
-        self._on_runner(result)
+    def v2_runner_on_skipped(self, result, skipped=True):
+        self._on_runner(result, skipped=True)
 
-    def v2_runner_on_unreachable(self, result):
+    def v2_runner_on_unreachable(self, result, unreach=True):
         self._on_runner(result)
 
     def v2_runner_item_on_ok(self, result):
         self._on_runner(result, is_item = True)
 
     def v2_runner_item_on_failed(self, result):
-        self._on_runner(result, is_item = True)
+        self._on_runner(result, is_item = True, failed=True)
 
     def v2_runner_item_on_skipped(self, result):
-        self._on_runner(result, is_item = True)
+        self._on_runner(result, is_item = True, skipped=True)
 
     def v2_runner_on_start(self, host, task):
         self._out(
