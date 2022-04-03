@@ -1,9 +1,9 @@
-namespace: ffpp
-name: hansible_modules
+namespace: managemint
+name: modules
 version: 0.2.0
 readme: README.md
 license: GPL-3.0
 authors:
 - Jonas Gunz <himself@jonasgunz.de>
 
-description: Plugins needed for hansible
+description: Plugins needed for managemint

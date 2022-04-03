@@ -1,6 +1,6 @@
-# hansible-modules
+# managemint-modules
 
-Ansible modules needed for hansible
+Ansible modules needed for managemint
 
 ## stdout callback
 

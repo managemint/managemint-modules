@@ -20,9 +20,9 @@ import socket
 class CallbackModule(CallbackBase):
     CALLBACK_VERSION = 2.0
     CALLBACK_TYPE = "stdout"
-    CALLBACK_NAME = "hansible-export"
+    CALLBACK_NAME = "managemint-export"
 
-    SOCKET_VAR = 'HANSIBLE_OUTPUT_SOCKET'
+    SOCKET_VAR = 'MANAGEMINT_OUTPUT_SOCKET'
 
     def __init__(self):
         super(CallbackModule, self).__init__()
